@@ -1,6 +1,8 @@
 import { Remote, TypertRemoteService } from "@deepseek-ai/dsh-typert-protocol";
 import { join, dirname } from "node:path";
 import { readFile, writeFile, rename } from "node:fs/promises";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import * as yaml from "js-yaml";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -22,6 +24,80 @@ const JsExpr = new yaml.Type("tag:yaml.org,2002:js", {
 });
 /** Schema for parsing and dumping patch documents, including `!!js`. */
 const patchSchema = yaml.JSON_SCHEMA.extend(JsExpr);
+
+/**
+ * The `navIcon(id)` branch this bundle injects into the official
+ * dsh-client-ui-settings-general bundle so the Settings sidebar shows the MCP
+ * logo for the "MCP servers" section instead of the default gear.
+ * The SVG is the official MCP logo mark (modelcontextprotocol.io), stroke
+ * follows currentColor so it adapts to dark/light themes.
+ */
+const MCP_NAV_BRANCH = `if (id === "mcp") return (0, react_jsx_runtime.jsx)("svg", {
+				width: 16,
+				height: 16,
+				className: SettingsRoot_module_css_default.navIcon,
+				viewBox: "0 0 180 180",
+				fill: "none",
+				xmlns: "http://www.w3.org/2000/svg",
+				"aria-hidden": "true",
+				children: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, {
+					children: [
+						(0, react_jsx_runtime.jsx)("path", {
+							d: "M23.5996 85.2532L86.2021 22.6507C94.8457 14.0071 108.86 14.0071 117.503 22.6507C126.147 31.2942 126.147 45.3083 117.503 53.9519L70.2254 101.23",
+							stroke: "currentColor",
+							strokeWidth: 11.0667,
+							strokeLinecap: "round"
+						}),
+						(0, react_jsx_runtime.jsx)("path", {
+							d: "M70.8789 100.578L117.504 53.952C126.148 45.3083 140.163 45.3083 148.806 53.952L149.132 54.278C157.776 62.9216 157.776 76.9357 149.132 85.5792L92.5139 142.198C89.6327 145.079 89.6327 149.75 92.5139 152.631L104.14 164.257",
+							stroke: "currentColor",
+							strokeWidth: 11.0667,
+							strokeLinecap: "round"
+						}),
+						(0, react_jsx_runtime.jsx)("path", {
+							d: "M101.853 38.3013L55.553 84.6011C46.9094 93.2447 46.9094 107.258 55.553 115.902C64.1966 124.546 78.2106 124.546 86.8543 115.902L133.154 69.6025",
+							stroke: "currentColor",
+							strokeWidth: 11.0667,
+							strokeLinecap: "round"
+						})
+					]
+				})
+			});`;
+
+/**
+ * Idempotently patch the official dsh-client-ui-settings-general bundle so the
+ * Settings sidebar nav renders the MCP logo for our section. DSH upgrades
+ * overwrite node_modules, so this runs on every host activation and re-patches
+ * if needed. All failures are swallowed: the icon is cosmetic and must never
+ * break the plugin.
+ * @param ctx - host plugin context (used for logging).
+ * @returns true when the patch is present after this run.
+ */
+function ensureNavIconPatch(ctx) {
+  try {
+    const require = createRequire(import.meta.url);
+    let target;
+    try {
+      target = require.resolve("@deepseek-ai/dsh-client-ui-settings-general/lib/client.js");
+    } catch {
+      return false; // package not present in this installation
+    }
+    if (!existsSync(target)) return false;
+    const src = readFileSync(target, "utf8");
+    if (src.includes('id === "mcp"')) return true; // already patched
+    const anchor = 'if (id === "plugins") return';
+    const idx = src.indexOf(anchor);
+    if (idx === -1) return false; // unexpected bundle shape; leave it alone
+    const insertAt = src.indexOf("\n", idx) + 1;
+    const patched = `${src.slice(0, insertAt)}${MCP_NAV_BRANCH}\n${src.slice(insertAt)}`;
+    writeFileSync(target, patched, "utf8");
+    ctx?.logger?.info?.("dsh-mcp-manager: patched navIcon with MCP logo");
+    return true;
+  } catch (error) {
+    ctx?.logger?.warn?.("dsh-mcp-manager: navIcon patch skipped:", error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
 
 //#region decorator helpers (must precede the decorated class)
 var __runInitializers = function(thisArg, initializers, value) {
@@ -207,6 +283,9 @@ let McpInventoryGateway = (() => {
     constructor(ctx) {
       super(ctx, "mcpInventory");
       __runInitializers(this, _instanceExtraInitializers);
+      // Cosmetic: ensure the Settings sidebar shows the MCP logo for our
+      // section. Runs on every activation, idempotent, never throws.
+      ensureNavIconPatch(ctx);
     }
     /** Path of the active profile's user patch file. */
     patchPath() {

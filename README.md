@@ -83,9 +83,12 @@ dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
 
 ## 已知限制
 
-- **需手动改 `dsh-client-ui-settings-general`**：设置面板左侧导航的 "MCP 服务器" 图标需要给官方包 `navIcon()` 加 `mcp` 分支（见 `patch-settings-general.js`，升级 DSH 后需重新打补丁）。不影响功能，仅影响导航图标显示
 - **host 服务需要 `tools` 服务**：`toolCount` 依赖 DSH 的工具注册表
 - **测试 idea/pycharm**：`stdioMcpServer` 模式会再拉起一次 IDE 进程，耗时较长
+
+## 图标说明
+
+设置面板左侧导航的 "MCP 服务器" 图标会在插件激活时**自动打补丁**（给官方 `dsh-client-ui-settings-general` 的 `navIcon` 注入 MCP logo 分支，幂等且失败静默）。DSH 升级覆盖官方包后，下次启动会自动重新打补丁，无需手动操作。
 
 > 升级提示：如果你是从早期手动安装版本升级过来的，先移除 `cordis.patch.yml` 里手动添加的 `mcp-inventory` / `ui-settings-mcp` 条目（bundle 会自动提供，重复会导致服务冲突）。全新安装用户无需理会。
 
