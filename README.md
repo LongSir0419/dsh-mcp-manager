@@ -11,12 +11,14 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 
 ## 架构
 
-由两个包组成：
+单包双半的 DSH bundle：
 
-| 包 | 角色 |
-|---|---|
-| `@long/dsh-mcp-inventory` | Host 侧 Remote 服务：list/add/update/remove/test，读写 `cordis.patch.yml` |
-| `@long/dsh-client-ui-settings-mcp` | 浏览器插件：设置面板 "MCP 服务器" 分区（`dsh.client` bundle） |
+| 半 | 入口 | 角色 |
+|---|---|---|
+| Host | `lib/index.js` | `mcpInventory` Remote 服务：list/add/update/removeServer/test，读写 `cordis.patch.yml`，统计工具数 |
+| Client | `lib/client.js` | 设置面板 "MCP 服务器" 分区（`dsh.client` bundle，被 client-modules 自动发现） |
+
+包通过 `dsh.bundle.patch`（`cordis.patch.yml`）声明，`dsh plugin` 安装后自动挂载。
 
 ## 安装
 
@@ -25,38 +27,28 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 - DeepSeek Harness (`dsh`) 已安装
 - Web profile（`dsh web`）可用
 
-### 方式一：手动安装（当前版本）
-
-1. 将两个包复制到 profile 的模块目录：
-
-```bash
-cp -r dsh-mcp-inventory dsh-client-ui-settings-mcp \
-  $DSH_HOME/profiles/node_modules/@long/
-```
-
-2. 在 `$DSH_HOME/profiles/web/cordis.patch.yml` 的 `insert` 列表追加：
-
-```yaml
-- insert:
-    - id: mcp-inventory
-      name: '@long/dsh-mcp-inventory'
-    - id: ui-settings-mcp
-      name: '@long/dsh-client-ui-settings-mcp'
-```
-
-3. 重启：
-
-```bash
-dsh web
-```
-
-### 方式二：bundle 安装（规划中）
-
-正在适配为标准 `dsh.bundle` 包，之后可一键安装：
+### 安装（已发布到 npm 后）
 
 ```bash
 dsh plugin --profile web add @long/dsh-mcp-manager
+dsh web   # 重启生效
 ```
+
+### 本地开发 / 未发布时（file 源）
+
+```bash
+dsh plugin --profile web add file:/path/to/dsh-mcp-manager/bundle
+dsh web
+```
+
+### 升级 / 移除
+
+```bash
+dsh plugin --profile web update @long/dsh-mcp-manager
+dsh plugin --profile web remove @long/dsh-mcp-manager
+```
+
+> `dsh plugin add` 会自动把包加入 `dsh.profile.bundles` 层（检测到 `dsh.bundle` 声明），无需手动改配置。
 
 ## 使用
 
@@ -86,13 +78,7 @@ dsh plugin --profile web add @long/dsh-mcp-manager
 - **需手动改 `dsh-client-ui-settings-general`**：设置面板左侧导航的 "MCP 服务器" 图标需要给官方包 `navIcon()` 加 `mcp` 分支（见 `patch-settings-general.js`，升级 DSH 后需重新打补丁）
 - **host 服务需要 `tools` 服务**：`toolCount` 依赖 DSH 的工具注册表
 - **测试 idea/pycharm**：`stdioMcpServer` 模式会再拉起一次 IDE 进程，耗时较长
-
-## 开发
-
-```bash
-# 本地验证（file 源安装）
-dsh plugin --profile web add file:../dsh-mcp-manager/dsh-mcp-inventory
-```
+- **若从旧的手动安装升级**：先移除 `cordis.patch.yml` 里手动添加的 `mcp-inventory` / `ui-settings-mcp` 条目（bundle 会自动提供，重复会导致服务冲突）
 
 ## License
 
