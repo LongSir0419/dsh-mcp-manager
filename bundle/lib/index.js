@@ -335,7 +335,7 @@ let McpInventoryGateway = (() => {
             cwd: config.cwd
           });
         }
-        client = new Client({ name: "@long/dsh-mcp-inventory-test", version: "0.1.0" });
+        client = new Client({ name: "@wanghailong0419/dsh-mcp-inventory-test", version: "0.1.0" });
         const timeout = new Promise((_, reject) => {
           const timer = setTimeout(() => reject(new Error("连接超时（15s）")), 15000);
           timer.unref?.();

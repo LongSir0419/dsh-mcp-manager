@@ -1,5 +1,5 @@
 window.__ModuleLoader__.load({
-	id: "@long/dsh-mcp-manager",
+	id: "@wanghailong0419/dsh-mcp-manager",
 	factory: (require) => {
 		var module = { exports: {} };
 		var exports = module.exports;
@@ -9,10 +9,10 @@ window.__ModuleLoader__.load({
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 		//#region mcpInventory remote descriptor (inlined; the host package is not a client module)
 		const mcpInventoryRemote = {
-			package: "@long/dsh-mcp-manager",
+			package: "@wanghailong0419/dsh-mcp-manager",
 			descriptors: [
 				{
-					id: "@long/dsh-mcp-manager#mcpInventory/list",
+					id: "@wanghailong0419/dsh-mcp-manager#mcpInventory/list",
 					service: "mcpInventory",
 					namespace: "mcpInventory",
 					method: "list",
@@ -20,38 +20,38 @@ window.__ModuleLoader__.load({
 					parameters: [],
 					result: {
 						mode: "strict",
-						typeSymbol: "@long/dsh-mcp-manager#McpInventorySnapshot",
+						typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpInventorySnapshot",
 						schema: z_object({ path: z_string(), entries: z_array(z_object({ id: z_string(), name: z_string(), config: z_record() })) })
 					}
 				},
 				{
-					id: "@long/dsh-mcp-manager#mcpInventory/add",
+					id: "@wanghailong0419/dsh-mcp-manager#mcpInventory/add",
 					service: "mcpInventory",
 					namespace: "mcpInventory",
 					method: "add",
 					invocation: { kind: "direct" },
-					parameters: [{ name: "spec", wire: "spec", source: "json", codec: { mode: "strict", typeSymbol: "@long/dsh-mcp-manager#McpAddSpec", schema: z_object({ serverName: z_string(), name: z_string_optional(), config: z_record_optional() }) } }],
+					parameters: [{ name: "spec", wire: "spec", source: "json", codec: { mode: "strict", typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpAddSpec", schema: z_object({ serverName: z_string(), name: z_string_optional(), config: z_record_optional() }) } }],
 					result: {
 						mode: "strict",
-						typeSymbol: "@long/dsh-mcp-manager#McpMutationResult",
+						typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpMutationResult",
 						schema: z_object({ ok: z_boolean(), id: z_string(), path: z_string(), entries: z_array(z_object({ id: z_string(), name: z_string(), config: z_record() })) })
 					}
 				},
 				{
-					id: "@long/dsh-mcp-manager#mcpInventory/update",
+					id: "@wanghailong0419/dsh-mcp-manager#mcpInventory/update",
 					service: "mcpInventory",
 					namespace: "mcpInventory",
 					method: "update",
 					invocation: { kind: "direct" },
-					parameters: [{ name: "spec", wire: "spec", source: "json", codec: { mode: "strict", typeSymbol: "@long/dsh-mcp-manager#McpUpdateSpec", schema: z_object({ id: z_string(), name: z_string_optional(), config: z_record_optional() }) } }],
+					parameters: [{ name: "spec", wire: "spec", source: "json", codec: { mode: "strict", typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpUpdateSpec", schema: z_object({ id: z_string(), name: z_string_optional(), config: z_record_optional() }) } }],
 					result: {
 						mode: "strict",
-						typeSymbol: "@long/dsh-mcp-manager#McpMutationResult",
+						typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpMutationResult",
 						schema: z_object({ ok: z_boolean(), id: z_string(), path: z_string(), entries: z_array(z_object({ id: z_string(), name: z_string(), config: z_record() })) })
 					}
 				},
 				{
-					id: "@long/dsh-mcp-manager#mcpInventory/removeServer",
+					id: "@wanghailong0419/dsh-mcp-manager#mcpInventory/removeServer",
 					service: "mcpInventory",
 					namespace: "mcpInventory",
 					method: "removeServer",
@@ -59,12 +59,12 @@ window.__ModuleLoader__.load({
 					parameters: [{ name: "id", wire: "id", source: "json", codec: { mode: "strict", typeSymbol: "string", schema: z_string() } }],
 					result: {
 						mode: "strict",
-						typeSymbol: "@long/dsh-mcp-manager#McpMutationResult",
+						typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpMutationResult",
 						schema: z_object({ ok: z_boolean(), id: z_string(), path: z_string(), entries: z_array(z_object({ id: z_string(), name: z_string(), config: z_record() })) })
 					}
 				},
 				{
-					id: "@long/dsh-mcp-manager#mcpInventory/test",
+					id: "@wanghailong0419/dsh-mcp-manager#mcpInventory/test",
 					service: "mcpInventory",
 					namespace: "mcpInventory",
 					method: "test",
@@ -72,7 +72,7 @@ window.__ModuleLoader__.load({
 					parameters: [{ name: "id", wire: "id", source: "json", codec: { mode: "strict", typeSymbol: "string", schema: z_string() } }],
 					result: {
 						mode: "strict",
-						typeSymbol: "@long/dsh-mcp-manager#McpTestResult",
+						typeSymbol: "@wanghailong0419/dsh-mcp-manager#McpTestResult",
 						schema: z_object({ ok: z_boolean(), id: z_string(), toolCount: z_number(), latencyMs: z_number(), message: z_string() })
 					}
 				}
@@ -89,10 +89,10 @@ window.__ModuleLoader__.load({
 		function z_array(item) { return { mode: "strict", parse: (v) => { if (!Array.isArray(v)) throw new Error("expected array"); return v.map((x) => item.parse(x)); } }; }
 		//#region css
 		const css = ".dshmcp_section{width:100%;max-width:760px;color:var(--dsw-alias-label-primary);flex-direction:column;gap:14px;display:flex}.dshmcp_heading h3,.dshmcp_status,.dshmcp_failure p{margin:0}.dshmcp_status,.dshmcp_failure{color:var(--dsw-alias-label-tertiary);font-size:13px;line-height:20px}.dshmcp_failure{color:var(--dsw-alias-state-error-primary);align-items:center;gap:10px;display:flex}.dshmcp_failure button,.dshmcp_addButton,.dshmcp_primary,.dshmcp_ghost,.dshmcp_danger{border:1px solid var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary);font:inherit;cursor:pointer;background:0 0;border-radius:6px;padding:4px 10px}.dshmcp_addButton{margin-left:auto;border-color:var(--dsw-alias-state-business-primary);color:var(--dsw-alias-state-business-primary)}.dshmcp_primary{background:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary);color:var(--dsw-alias-bg-layer-1)}.dshmcp_danger{border-color:var(--dsw-alias-state-error-primary);color:var(--dsw-alias-state-error-primary)}.dshmcp_ghost:hover{background:var(--dsw-alias-interactive-bg-hover)}.dshmcp_catalog{flex-direction:column;gap:12px;display:flex}.dshmcp_heading{align-items:baseline;gap:7px;padding:0 2px;display:flex}.dshmcp_heading h3{font-size:13px;font-weight:600;line-height:20px}.dshmcp_heading span{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:12px;line-height:18px}.dshmcp_cards{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:10px;margin:0;padding:0;list-style:none;display:grid}.dshmcp_card{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:10px;min-width:0;overflow:hidden}.dshmcp_card[data-open=true]{border-color:var(--dsw-alias-border-l1);box-shadow:var(--dsw-shadow-lv1)}.dshmcp_cardContent{width:100%;border:0;background:0 0;color:inherit;font:inherit;text-align:left;cursor:pointer;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;display:flex}.dshmcp_cardTitle{font-size:13px;font-weight:600;line-height:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dshmcp_cardTrailing{align-items:center;gap:8px;display:flex;flex:none}.dshmcp_statusDot{width:8px;height:8px;border-radius:50%;display:inline-block}.dshmcp_statusDot[data-phase=active]{background:var(--dsw-alias-state-success-primary)}.dshmcp_statusDot[data-phase=loading]{background:var(--dsw-alias-state-warning-primary)}.dshmcp_statusDot[data-phase=failed]{background:var(--dsw-alias-state-error-primary)}.dshmcp_statusDot[data-phase=pending]{background:var(--dsw-alias-label-tertiary)}.dshmcp_configTag{font-size:11px;line-height:16px;border-radius:999px;padding:1px 8px}.dshmcp_configTag[data-enabled=true]{background:color-mix(in srgb,var(--dsw-alias-state-success-primary) 14%,transparent);color:var(--dsw-alias-state-success-primary)}.dshmcp_configTag[data-enabled=false]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-tertiary)}.dshmcp_configTag[data-status=ok]{background:color-mix(in srgb,var(--dsw-alias-state-success-primary) 14%,transparent);color:var(--dsw-alias-state-success-primary)}.dshmcp_configTag[data-status=bad]{background:color-mix(in srgb,var(--dsw-alias-state-error-primary) 14%,transparent);color:var(--dsw-alias-state-error-primary)}.dshmcp_testResult{font-size:12px;line-height:18px;margin:0;word-break:break-all;overflow-wrap:anywhere}.dshmcp_testResult[data-status=ok]{color:var(--dsw-alias-state-success-primary)}.dshmcp_testResult[data-status=bad]{color:var(--dsw-alias-state-error-primary)}.dshmcp_chevron{color:var(--dsw-alias-label-tertiary);flex:none}.dshmcp_cardDetails{border-top:1px solid var(--dsw-alias-border-l2);flex-direction:column;gap:10px;padding:10px 14px 14px;display:flex}.dshmcp_entryValue{font-size:12px;line-height:18px;background:var(--dsw-alias-bg-layer-2);border-radius:6px;padding:4px 8px;word-break:break-all;overflow-wrap:anywhere;font-family:var(--dsw-font-mono)}.dshmcp_details{margin:0;flex-direction:column;gap:6px;display:flex}.dshmcp_details>div{display:flex;gap:8px;font-size:12px;line-height:18px}.dshmcp_details dt{color:var(--dsw-alias-label-tertiary);flex:none;min-width:72px}.dshmcp_details dd{margin:0;color:var(--dsw-alias-label-primary);word-break:break-all;overflow-wrap:anywhere}.dshmcp_form{flex-direction:column;gap:10px;display:flex}.dshmcp_formRow{flex-direction:column;gap:4px;display:flex}.dshmcp_formRow label{font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary)}.dshmcp_formRow input,.dshmcp_formRow textarea{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;border-radius:8px;padding:6px 10px;font-size:13px;line-height:20px;outline:none}.dshmcp_formRow input:focus-visible,.dshmcp_formRow textarea:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb,var(--dsw-alias-state-business-primary) 18%,transparent)}.dshmcp_formRow textarea{min-height:90px;resize:vertical;font-family:var(--dsw-font-mono);font-size:12px}.dshmcp_formActions{align-items:center;gap:8px;display:flex}.dshmcp_formError{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:18px;margin:0}.dshmcp_notice{font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary);margin:0}.dshmcp_modal{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center}.dshmcp_modalMask{position:absolute;inset:0;background:var(--dsw-alias-bg-mask-1);backdrop-filter:var(--dsw-mask-blur)}.dshmcp_modalPanel{position:relative;background:var(--dsw-alias-bg-layer-2);border-radius:16px;box-shadow:var(--dsw-shadow-lv3);width:560px;max-width:calc(100vw - 48px);max-height:calc(100vh - 96px);overflow:auto;padding:20px;flex-direction:column;gap:14px;display:flex}.dshmcp_modalTitle{font-size:15px;font-weight:600;line-height:22px;margin:0}.dshmcp_actionRow{align-items:center;gap:8px;display:flex;margin-top:2px}.dshmcp_actionRow .dshmcp_ghost{padding:2px 8px;font-size:12px}";
-		const tagId = "@long/dsh-mcp-manager/McpSection.module.css";
+		const tagId = "@wanghailong0419/dsh-mcp-manager/McpSection.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
-			tag.dataset.plugin = "@long/dsh-mcp-manager";
+			tag.dataset.plugin = "@wanghailong0419/dsh-mcp-manager";
 			tag.dataset.pluginCss = tagId;
 			tag.textContent = css;
 			document.head.appendChild(tag);
@@ -178,7 +178,7 @@ window.__ModuleLoader__.load({
 		}
 		/** Only real MCP server entries are manageable; mcp-inventory is the management service itself. */
 		function isMcpEntry(entry) {
-			if (entry.name === "@long/dsh-mcp-manager") return false;
+			if (entry.name === "@wanghailong0419/dsh-mcp-manager") return false;
 			return (entry.id !== void 0 && entry.id.startsWith("mcp-")) || entry.name === "@deepseek-ai/dsh-mcp-client";
 		}
 		/** Pretty-print a config object as YAML-ish text for the editor. */
@@ -336,7 +336,7 @@ window.__ModuleLoader__.load({
 					const merged = {
 						...snapshot,
 						entries: snapshot.entries.map((entry) => {
-							if (entry.id === void 0 || !entry.id.startsWith("mcp-") || entry.name === "@long/dsh-mcp-manager") return entry;
+							if (entry.id === void 0 || !entry.id.startsWith("mcp-") || entry.name === "@wanghailong0419/dsh-mcp-manager") return entry;
 							const cached = readCachedStatus(entry.id);
 							if (cached === void 0) return entry;
 							return {
@@ -350,7 +350,7 @@ window.__ModuleLoader__.load({
 					setState({ status: "ready", snapshot: merged });
 					// Auto-verify servers still reported as disconnected, but
 					// only when no fresh handshake ran recently (debounced).
-					const offline = merged.entries.filter((e) => e.id !== void 0 && e.id.startsWith("mcp-") && e.name !== "@long/dsh-mcp-manager" && !(e.connected === true || (e.toolCount ?? 0) > 0));
+					const offline = merged.entries.filter((e) => e.id !== void 0 && e.id.startsWith("mcp-") && e.name !== "@wanghailong0419/dsh-mcp-manager" && !(e.connected === true || (e.toolCount ?? 0) > 0));
 					for (const entry of offline) {
 						if (probeDebounced(entry.id)) continue;
 						Promise.resolve().then(() => testRef.current(entry.id)).then((result) => {

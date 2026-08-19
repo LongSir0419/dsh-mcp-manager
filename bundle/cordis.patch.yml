@@ -1,5 +1,5 @@
 # dsh-mcp-manager bundle patch.
-# Installed via `dsh plugin --profile web add @long/dsh-mcp-manager`;
+# Installed via `dsh plugin --profile web add @wanghailong0419/dsh-mcp-manager`;
 # `dsh plugin` auto-activates this bundle because it declares dsh.bundle.
 #
 # One entry mounts both halves of the package:
@@ -8,4 +8,4 @@
 #     discovered by dsh-client-modules through the dsh.client declaration.
 - insert:
     - id: dsh-mcp-manager
-      name: '@long/dsh-mcp-manager'
+      name: '@wanghailong0419/dsh-mcp-manager'

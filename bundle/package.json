@@ -1,5 +1,5 @@
 {
-  "name": "@long/dsh-mcp-manager",
+  "name": "@wanghailong0419/dsh-mcp-manager",
   "description": "DSH bundle: MCP server manager — settings section UI (status, add, edit, remove, connection test) plus the host inventory Remote service",
   "version": "0.1.0",
   "type": "module",

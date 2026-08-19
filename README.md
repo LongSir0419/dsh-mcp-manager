@@ -30,7 +30,7 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 ### 安装（已发布到 npm 后）
 
 ```bash
-dsh plugin --profile web add @long/dsh-mcp-manager
+dsh plugin --profile web add @wanghailong0419/dsh-mcp-manager
 dsh web   # 重启生效
 ```
 
@@ -44,8 +44,8 @@ dsh web
 ### 升级 / 移除
 
 ```bash
-dsh plugin --profile web update @long/dsh-mcp-manager
-dsh plugin --profile web remove @long/dsh-mcp-manager
+dsh plugin --profile web update @wanghailong0419/dsh-mcp-manager
+dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
 ```
 
 > `dsh plugin add` 会自动把包加入 `dsh.profile.bundles` 层（检测到 `dsh.bundle` 声明），无需手动改配置。
