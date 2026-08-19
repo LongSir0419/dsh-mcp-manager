@@ -2,6 +2,10 @@
 
 DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可视化查看、新增、编辑、删除 MCP 服务器，并支持主动连接测试。
 
+[![npm](https://img.shields.io/npm/v/@wanghailong0419/dsh-mcp-manager)](https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager)
+[![npm downloads](https://img.shields.io/npm/dm/@wanghailong0419/dsh-mcp-manager)](https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ## 功能
 
 - **状态总览**：进入设置 → "MCP 服务器"，每个 server 显示连接状态（绿=正常 / 红=异常）+ 已注册工具数
@@ -27,14 +31,16 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 - DeepSeek Harness (`dsh`) 已安装
 - Web profile（`dsh web`）可用
 
-### 安装（已发布到 npm 后）
+### 安装（npm 已发布）
 
 ```bash
 dsh plugin --profile web add @wanghailong0419/dsh-mcp-manager
 dsh web   # 重启生效
 ```
 
-### 本地开发 / 未发布时（file 源）
+> npm 包：https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager
+
+### 本地开发 / 未发布版本（file 源）
 
 ```bash
 dsh plugin --profile web add file:/path/to/dsh-mcp-manager/bundle
