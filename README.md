@@ -6,6 +6,8 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 [![npm downloads](https://img.shields.io/npm/dm/@wanghailong0419/dsh-mcp-manager)](https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+![preview](docs/preview.png)
+
 ## 功能
 
 - **状态总览**：进入设置 → "MCP 服务器"，每个 server 显示连接状态（绿=正常 / 红=异常）+ 已注册工具数
