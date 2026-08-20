@@ -645,7 +645,7 @@ window.__ModuleLoader__.load({
 		//#endregion
 		//#region locales
 		const zh = {
-			nav: "MCP 服务器",
+			nav: "mcp管理",
 			loading: "正在读取 MCP 服务器…",
 			error: "暂时无法读取 MCP 服务器。",
 			retry: "重试",
@@ -689,7 +689,7 @@ window.__ModuleLoader__.load({
 			unloading: "卸载中"
 		};
 		const en = {
-			nav: "MCP servers",
+			nav: "MCP Manager",
 			loading: "Reading MCP servers…",
 			error: "MCP servers are temporarily unavailable.",
 			retry: "Retry",
