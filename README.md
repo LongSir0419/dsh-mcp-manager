@@ -12,7 +12,7 @@ An MCP server management plugin for DeepSeek Harness (DSH) — visually view, ad
 
 ## Features
 
-- **List overview**: go to Settings → "mcp管理", each server shows connection status (green dot) + registered tool count
+- **List overview**: go to Settings → "MCP Manager", each server shows connection status (green dot) + registered tool count
 - **Click to expand / collapse**: click anywhere on a row to expand details (Server name / module / config JSON), click again to collapse (input fields and buttons excluded)
 - **Add / edit / delete / enable-disable**: inline form to configure MCP servers (serverName, module, config JSON), enable/disable toggle, writes to `$DSH_HOME/profiles/web/cordis.patch.yml`
 - **Connection test**: independent MCP handshake (initialize + tools/list) to verify reachability, tool count and latency
@@ -25,7 +25,7 @@ A single-package, two-half DSH bundle:
 | Half | Entry | Role |
 |---|---|---|
 | Host | `lib/index.js` | `mcpInventory` Remote service: list/add/update/removeServer/test, reads/writes `cordis.patch.yml`, counts tools |
-| Client | `lib/client.js` | "MCP 服务器" section in the settings panel (`dsh.client` bundle, auto-discovered by client-modules) |
+| Client | `lib/client.js` | "MCP Servers" section in the settings panel (`dsh.client` bundle, auto-discovered by client-modules) |
 
 The package declares itself via `dsh.bundle.patch` (`cordis.patch.yml`) and is auto-mounted after `dsh plugin` installs it.
 
@@ -63,10 +63,10 @@ dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
 
 ## Usage
 
-1. Start `dsh web`, open **Settings → mcp管理**
+1. Start `dsh web`, open **Settings → MCP Manager**
 2. Each server row shows: name, status dot (green/red), tool count
 3. Click a row to expand: view Server name / module / config JSON, **test connection**, edit, delete
-4. Add: click "新增", fill in serverName / module / config JSON inline
+4. Add: click "Add", fill in serverName / module / config JSON inline
 5. Enable/disable: toggle the switch on the right side of the row
 
 > Changes are written to `cordis.patch.yml` and take effect **after restarting `dsh web`** (HMR is disabled in web mode).
@@ -92,7 +92,7 @@ dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
 
 ## Icon Notes
 
-The "MCP 服务器" icon in the settings panel's left navigation is **patched automatically** when the plugin activates (injects an MCP logo branch into the official `dsh-client-ui-settings-general` `navIcon`; idempotent and fails silently). If DSH upgrades overwrite the official package, the patch is re-applied automatically on next startup — no manual action needed.
+The "MCP Servers" icon in the settings panel's left navigation is **patched automatically** when the plugin activates (injects an MCP logo branch into the official `dsh-client-ui-settings-general` `navIcon`; idempotent and fails silently). If DSH upgrades overwrite the official package, the patch is re-applied automatically on next startup — no manual action needed.
 
 > Upgrade note: if you're upgrading from an earlier manual installation, remove the manually added `mcp-inventory` / `ui-settings-mcp` entries from `cordis.patch.yml` first (the bundle provides them automatically; duplicates cause service conflicts). Fresh installs can ignore this.
 
