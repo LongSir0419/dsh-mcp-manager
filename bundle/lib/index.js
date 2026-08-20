@@ -177,7 +177,7 @@ function collectMcpEntries(doc) {
     for (const node of list) {
       if (node === null || typeof node !== "object" || Array.isArray(node)) continue;
       if (node.id !== void 0 && typeof node.id === "string" && node.id.startsWith("mcp-")) {
-        entries.push({ id: node.id, name: node.name, config: node.config ?? {} });
+        entries.push({ id: node.id, name: node.name, config: node.config ?? {}, enabled: node.enabled !== false });
       }
       if (Array.isArray(node.insert)) walk(node.insert);
     }
@@ -186,7 +186,9 @@ function collectMcpEntries(doc) {
   return entries;
 }
 
-/** Replace or insert one `mcp-*` entry inside the first insert list; if no insert list exists, create one. */
+/** Replace or insert one `mcp-*` entry inside the first insert list; if no insert list exists, create one.
+ * Existing entries are shallow-merged so unrelated fields survive, and
+ * `undefined` values are dropped (avoid writing `enabled: undefined`). */
 function upsertMcpEntry(doc, entry) {
   let insertList = null;
   for (const node of doc) {
@@ -200,8 +202,15 @@ function upsertMcpEntry(doc, entry) {
     doc.push({ insert: insertList });
   }
   const index = insertList.findIndex((e) => e && e.id === entry.id);
-  if (index >= 0) insertList[index] = entry;
-  else insertList.push(entry);
+  const clean = {};
+  for (const [k, v] of Object.entries(entry)) {
+    if (v !== void 0) clean[k] = v;
+  }
+  if (index >= 0) {
+    insertList[index] = { ...insertList[index], ...clean };
+  } else {
+    insertList.push(clean);
+  }
 }
 
 /** Remove every `mcp-*` entry with the given id from all insert lists. */
@@ -242,6 +251,7 @@ let McpInventoryGateway = (() => {
   let _update_decorators;
   let _remove_decorators;
   let _test_decorators;
+  let _set_enabled_decorators;
   return class McpInventoryGateway extends _classSuper {
     static {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -250,6 +260,7 @@ let McpInventoryGateway = (() => {
       _update_decorators = [Remote("update")];
       _remove_decorators = [Remote("removeServer")];
       _test_decorators = [Remote("test")];
+      _set_enabled_decorators = [Remote("setEnabled")];
       __esDecorate(this, null, _list_decorators, {
         kind: "method", name: "list", static: false, private: false,
         access: { has: (obj) => "list" in obj, get: (obj) => obj.list },
@@ -273,6 +284,11 @@ let McpInventoryGateway = (() => {
       __esDecorate(this, null, _test_decorators, {
         kind: "method", name: "test", static: false, private: false,
         access: { has: (obj) => "test" in obj, get: (obj) => obj.test },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate(this, null, _set_enabled_decorators, {
+        kind: "method", name: "setEnabled", static: false, private: false,
+        access: { has: (obj) => "setEnabled" in obj, get: (obj) => obj.setEnabled },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
       if (_metadata) Object.defineProperty(this, Symbol.metadata, {
@@ -354,23 +370,34 @@ let McpInventoryGateway = (() => {
       await atomicWrite(path, yaml.dump(doc, { schema: patchSchema }));
       return { ok: true, id, path, entries: collectMcpEntries(doc) };
     }
-    /** Update an existing MCP server entry by id. */
+    /** Update an existing MCP server entry by id. When `serverName` is
+     * provided and differs, the entry id is renamed accordingly. */
     async update(spec) {
-      const { id, name, config } = spec;
+      const { id, serverName, name, config } = spec;
       if (typeof id !== "string" || !id.startsWith("mcp-")) throw new Error("mcp-inventory: id must start with mcp-");
+      if (serverName !== void 0 && serverName !== null && serverName !== "") {
+        if (!/^[A-Za-z0-9_-]{1,32}$/.test(serverName)) throw new Error("mcp-inventory: serverName must match [A-Za-z0-9_-]{1,32}");
+      }
       const path = this.patchPath();
       const text = await readFile(path, "utf8");
       const doc = parsePatchDocument(text);
       const before = collectMcpEntries(doc);
       const target = before.find((e) => e.id === id);
       if (!target) throw new Error(`mcp-inventory: MCP server "${id}" not found`);
+      const newId = serverName !== void 0 && serverName !== null && serverName !== "" ? `mcp-${serverName}` : id;
+      if (newId !== id && before.some((e) => e.id === newId)) throw new Error(`mcp-inventory: MCP server "${newId}" already exists`);
+      if (newId !== id) {
+        const replaced = removeMcpEntry(doc, id);
+        if (!replaced) throw new Error(`mcp-inventory: MCP server "${id}" not found`);
+      }
       upsertMcpEntry(doc, {
-        id,
+        id: newId,
         name: name ?? target.name ?? "@deepseek-ai/dsh-mcp-client",
-        config: config ?? target.config ?? {}
+        config: config ?? target.config ?? {},
+        enabled: target.enabled === false ? false : void 0
       });
       await atomicWrite(path, yaml.dump(doc, { schema: patchSchema }));
-      return { ok: true, id, path, entries: collectMcpEntries(doc) };
+      return { ok: true, id: newId, path, entries: collectMcpEntries(doc) };
     }
     /** Remove an MCP server entry by id. Named removeServer because `remove`
      * collides with RemoteNamespaceService.prototype.remove in the client api. */
@@ -383,6 +410,35 @@ let McpInventoryGateway = (() => {
       if (!removed) throw new Error(`mcp-inventory: MCP server "${id}" not found`);
       await atomicWrite(path, yaml.dump(doc, { schema: patchSchema }));
       return { ok: true, id, path, entries: collectMcpEntries(doc) };
+    }
+    /** Enable or disable an MCP server entry by toggling the cordis `enabled`
+     * field on its patch entry (`enabled: false` stops the loader from
+     * activating it; removing the field re-enables it). */
+    async setEnabled(spec) {
+      const { id, enabled } = spec;
+      if (typeof id !== "string" || !id.startsWith("mcp-")) throw new Error("mcp-inventory: id must start with mcp-");
+      if (typeof enabled !== "boolean") throw new Error("mcp-inventory: enabled must be a boolean");
+      const path = this.patchPath();
+      const text = await readFile(path, "utf8");
+      const doc = parsePatchDocument(text);
+      let found = false;
+      const walk = (list) => {
+        for (const node of list) {
+          if (node === null || typeof node !== "object" || Array.isArray(node)) continue;
+          if (node.id === id) {
+            found = true;
+            if (enabled) delete node.enabled;
+            else node.enabled = false;
+            continue;
+          }
+          if (Array.isArray(node.insert)) walk(node.insert);
+        }
+      };
+      walk(doc);
+      if (!found) throw new Error(`mcp-inventory: MCP server "${id}" not found`);
+      await atomicWrite(path, yaml.dump(doc, { schema: patchSchema }));
+      const entries = collectMcpEntries(doc);
+      return { ok: true, id, enabled, path, entries };
     }
     /**
      * Actively test connectivity to one MCP server: perform a fresh MCP

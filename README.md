@@ -6,14 +6,15 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 [![npm downloads](https://img.shields.io/npm/dm/@wanghailong0419/dsh-mcp-manager)](https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-![preview](docs//preview_01.png)
+![preview](docs/preview_01.png)
 
 ## 功能
 
-- **状态总览**：进入设置 → "MCP 服务器"，每个 server 显示连接状态（绿=正常 / 红=异常）+ 已注册工具数
-- **新增 / 编辑 / 删除**：表单化配置 MCP server（serverName、transport、command、args、env），写入 `$DSH_HOME/profiles/web/cordis.patch.yml`
+- **列表总览**：进入设置 → "mcp管理"，每个 server 显示连接状态（绿点）+ 已注册工具数
+- **点击展开 / 收起**：点击行任意位置展开详情（Server 名称 / 模块 / 配置 JSON），再点收起（输入框与按钮除外）
+- **新增 / 编辑 / 删除 / 启停**：内联表单配置 MCP server（serverName、模块、配置 JSON），启用/停用开关，写入 `$DSH_HOME/profiles/web/cordis.patch.yml`
 - **测试连接**：独立发起 MCP 握手（initialize + tools/list），验证 server 是否可达、返回工具数与延迟
-- **缓存优化**：切走再切回状态秒开（stale-while-revalidate），未连接 server 自动后台验证
+- **缓存优化**：切走再切回状态秒开（stale-while-revalidate），未连接 server 自动后台验证；增删改本地更新不闪烁
 
 ## 架构
 
@@ -60,10 +61,11 @@ dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
 
 ## 使用
 
-1. 启动 `dsh web`，打开**设置 → MCP 服务器**
-2. 每个 server 卡片显示：名称、状态点（绿/红）、工具数
-3. 展开卡片：查看配置、**测试连接**、编辑、删除
-4. 新增：点右上角"新增"，填写 serverName / 模块 / 配置 JSON
+1. 启动 `dsh web`，打开**设置 → mcp管理**
+2. 每个 server 行显示：名称、状态点（绿/红）、工具数
+3. 点击行展开：查看 Server 名称 / 模块 / 配置 JSON，**测试连接**、编辑、删除
+4. 新增：点"新增"，内联填写 serverName / 模块 / 配置 JSON
+5. 启用/停用：点行右侧开关切换
 
 > 修改会写入 `cordis.patch.yml`，**重启 dsh web 后生效**（web 模式 HMR 禁用）。
 

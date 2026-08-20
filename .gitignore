@@ -3,3 +3,6 @@ node_modules/
 .DS_Store
 Thumbs.db
 .tmp*
+
+# Temporary verification probes (not part of the package)
+probe-*.mjs
