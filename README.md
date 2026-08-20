@@ -1,6 +1,8 @@
 # dsh-mcp-manager
 
-DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可视化查看、新增、编辑、删除 MCP 服务器，并支持主动连接测试。
+[English](README.md) | [中文](README_CN.md)
+
+An MCP server management plugin for DeepSeek Harness (DSH) — visually view, add, edit and remove MCP servers in the Web settings, with built-in connection testing.
 
 [![npm](https://img.shields.io/npm/v/@wanghailong0419/dsh-mcp-manager)](https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager)
 [![npm downloads](https://img.shields.io/npm/dm/@wanghailong0419/dsh-mcp-manager)](https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager)
@@ -8,68 +10,68 @@ DeepSeek Harness (DSH) 的 MCP 服务器管理插件——在 Web 设置里可�
 
 ![preview](docs/preview_01.png)
 
-## 功能
+## Features
 
-- **列表总览**：进入设置 → "mcp管理"，每个 server 显示连接状态（绿点）+ 已注册工具数
-- **点击展开 / 收起**：点击行任意位置展开详情（Server 名称 / 模块 / 配置 JSON），再点收起（输入框与按钮除外）
-- **新增 / 编辑 / 删除 / 启停**：内联表单配置 MCP server（serverName、模块、配置 JSON），启用/停用开关，写入 `$DSH_HOME/profiles/web/cordis.patch.yml`
-- **测试连接**：独立发起 MCP 握手（initialize + tools/list），验证 server 是否可达、返回工具数与延迟
-- **缓存优化**：切走再切回状态秒开（stale-while-revalidate），未连接 server 自动后台验证；增删改本地更新不闪烁
+- **List overview**: go to Settings → "mcp管理", each server shows connection status (green dot) + registered tool count
+- **Click to expand / collapse**: click anywhere on a row to expand details (Server name / module / config JSON), click again to collapse (input fields and buttons excluded)
+- **Add / edit / delete / enable-disable**: inline form to configure MCP servers (serverName, module, config JSON), enable/disable toggle, writes to `$DSH_HOME/profiles/web/cordis.patch.yml`
+- **Connection test**: independent MCP handshake (initialize + tools/list) to verify reachability, tool count and latency
+- **Cache optimization**: re-entering the page is instant (stale-while-revalidate); unconnected servers are verified in the background automatically; add/edit/delete updates state locally without flicker
 
-## 架构
+## Architecture
 
-单包双半的 DSH bundle：
+A single-package, two-half DSH bundle:
 
-| 半 | 入口 | 角色 |
+| Half | Entry | Role |
 |---|---|---|
-| Host | `lib/index.js` | `mcpInventory` Remote 服务：list/add/update/removeServer/test，读写 `cordis.patch.yml`，统计工具数 |
-| Client | `lib/client.js` | 设置面板 "MCP 服务器" 分区（`dsh.client` bundle，被 client-modules 自动发现） |
+| Host | `lib/index.js` | `mcpInventory` Remote service: list/add/update/removeServer/test, reads/writes `cordis.patch.yml`, counts tools |
+| Client | `lib/client.js` | "MCP 服务器" section in the settings panel (`dsh.client` bundle, auto-discovered by client-modules) |
 
-包通过 `dsh.bundle.patch`（`cordis.patch.yml`）声明，`dsh plugin` 安装后自动挂载。
+The package declares itself via `dsh.bundle.patch` (`cordis.patch.yml`) and is auto-mounted after `dsh plugin` installs it.
 
-## 安装
+## Installation
 
-### 前置
+### Prerequisites
 
-- DeepSeek Harness (`dsh`) 已安装
-- Web profile（`dsh web`）可用
+- DeepSeek Harness (`dsh`) installed
+- Web profile (`dsh web`) available
 
-### 安装（npm 已发布）
+### Install (published on npm)
 
 ```bash
 dsh plugin --profile web add @wanghailong0419/dsh-mcp-manager
-dsh web   # 重启生效
+dsh web   # restart to take effect
 ```
 
-> npm 包：https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager
+> npm package: https://www.npmjs.com/package/@wanghailong0419/dsh-mcp-manager
 
-### 本地开发 / 未发布版本（file 源）
+### Local development / unpublished version (file source)
 
 ```bash
 dsh plugin --profile web add file:/path/to/dsh-mcp-manager/bundle
 dsh web
 ```
 
-### 升级 / 移除
+### Upgrade / Remove
 
 ```bash
 dsh plugin --profile web update @wanghailong0419/dsh-mcp-manager
 dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
 ```
 
-> `dsh plugin add` 会自动把包加入 `dsh.profile.bundles` 层（检测到 `dsh.bundle` 声明），无需手动改配置。
+> `dsh plugin add` automatically adds the package to the `dsh.profile.bundles` layer (it detects the `dsh.bundle` declaration) — no manual config editing needed.
 
-## 使用
+## Usage
 
-1. 启动 `dsh web`，打开**设置 → mcp管理**
-2. 每个 server 行显示：名称、状态点（绿/红）、工具数
-3. 点击行展开：查看 Server 名称 / 模块 / 配置 JSON，**测试连接**、编辑、删除
-4. 新增：点"新增"，内联填写 serverName / 模块 / 配置 JSON
-5. 启用/停用：点行右侧开关切换
+1. Start `dsh web`, open **Settings → mcp管理**
+2. Each server row shows: name, status dot (green/red), tool count
+3. Click a row to expand: view Server name / module / config JSON, **test connection**, edit, delete
+4. Add: click "新增", fill in serverName / module / config JSON inline
+5. Enable/disable: toggle the switch on the right side of the row
 
-> 修改会写入 `cordis.patch.yml`，**重启 dsh web 后生效**（web 模式 HMR 禁用）。
+> Changes are written to `cordis.patch.yml` and take effect **after restarting `dsh web`** (HMR is disabled in web mode).
 
-## 配置示例
+## Configuration Example
 
 ```yaml
 - id: mcp-example
@@ -83,16 +85,16 @@ dsh plugin --profile web remove @wanghailong0419/dsh-mcp-manager
       TOKEN: !!js process.env.MY_TOKEN
 ```
 
-## 已知限制
+## Known Limitations
 
-- **host 服务需要 `tools` 服务**：`toolCount` 依赖 DSH 的工具注册表
-- **测试 idea/pycharm**：`stdioMcpServer` 模式会再拉起一次 IDE 进程，耗时较长
+- **Host service requires the `tools` service**: `toolCount` depends on DSH's tool registry
+- **Testing idea/pycharm**: `stdioMcpServer` mode launches the IDE process once more, which takes longer
 
-## 图标说明
+## Icon Notes
 
-设置面板左侧导航的 "MCP 服务器" 图标会在插件激活时**自动打补丁**（给官方 `dsh-client-ui-settings-general` 的 `navIcon` 注入 MCP logo 分支，幂等且失败静默）。DSH 升级覆盖官方包后，下次启动会自动重新打补丁，无需手动操作。
+The "MCP 服务器" icon in the settings panel's left navigation is **patched automatically** when the plugin activates (injects an MCP logo branch into the official `dsh-client-ui-settings-general` `navIcon`; idempotent and fails silently). If DSH upgrades overwrite the official package, the patch is re-applied automatically on next startup — no manual action needed.
 
-> 升级提示：如果你是从早期手动安装版本升级过来的，先移除 `cordis.patch.yml` 里手动添加的 `mcp-inventory` / `ui-settings-mcp` 条目（bundle 会自动提供，重复会导致服务冲突）。全新安装用户无需理会。
+> Upgrade note: if you're upgrading from an earlier manual installation, remove the manually added `mcp-inventory` / `ui-settings-mcp` entries from `cordis.patch.yml` first (the bundle provides them automatically; duplicates cause service conflicts). Fresh installs can ignore this.
 
 ## License
 
